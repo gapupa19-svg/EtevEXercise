@@ -1,0 +1,561 @@
+<title>ETEV en Movimiento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
+<style>
+/* Layout: columna única tipo tarjeta publicitaria — pastilla azul de título, tarjetas amarillo pálido, chips amarillos, franja gris informativa y barra azul de acción */
+:root{
+  --blue:#4FAFDD; --blue-d:#3F9ACB; --blue-soft:#E6F4FB;
+  --card:#FEF9D0; --pill:#F4D96B; --pill-d:#E9C94A;
+  --band:#ECECEC; --badge:#707070; --ink:#1B1B1B; --muted:#5C5C5C; --line:#E7DFA8;
+  --bg:#FFFFFF;
+  --ok:#48A877; --warn:#F4D96B; --orange:#F0954A; --red:#DE5A4F; --red-soft:#FCE7E4; --ok-soft:#E3F4EA;
+  --f:'Nunito',ui-rounded,'Segoe UI',system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.hero{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;margin:8px 0 22px}
+.hero .p1{background:var(--blue);color:#fff;font-weight:800;font-size:clamp(18px,5vw,34px);padding:12px 18px 6px;border-radius:14px;text-align:center;line-height:1.15}
+.hero .p2{background:var(--blue);color:#fff;font-weight:800;font-size:clamp(16px,4.2vw,27px);padding:4px 18px 12px;border-radius:0 0 14px 14px;margin-top:-2px;text-align:center}
+.count{position:absolute;right:0;top:-18px;background:var(--badge);color:#fff;font-weight:700;border-radius:999px;padding:6px 14px;font-size:15px}
+.band{background:var(--band);display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:4px;margin:0 0 24px;font-size:15.5px}
+.band svg{flex:none}
+.card{background:var(--card);border-radius:6px;padding:20px 18px 18px;margin-bottom:18px;position:relative}
+.card h2{font-size:21px;font-weight:900;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.step{background:var(--badge);color:#fff;font-size:13px;font-weight:800;border-radius:999px;padding:3px 10px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.lab{font-weight:800;font-size:15px}
+.hint{font-weight:600;color:var(--muted);font-size:13px}
+.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+@media (max-width:560px){.grid4{grid-template-columns:1fr 1fr}.grid4 .full{grid-column:1/-1}}
+input[type=text],input[type=number],textarea{font:inherit;font-weight:700;border:2px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;width:100%;color:var(--ink)}
+textarea{font-weight:600;min-height:70px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:700;font-size:15px;border:2px solid var(--pill);background:#fff;color:var(--ink);border-radius:10px;padding:7px 13px;cursor:pointer;transition:background .15s}
+.chip[aria-pressed=true]{background:var(--pill);border-color:var(--pill-d)}
+.chip.alarm{border-color:#F2B5AE}
+.chip.alarm[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.imc{font-weight:800;font-size:14px;background:#fff;border-radius:999px;padding:4px 12px;align-self:flex-start}
+.go{display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--blue-d);color:#fff;border:0;font:inherit;font-weight:800;font-size:22px;padding:18px 22px;cursor:pointer;border-radius:4px;margin-top:6px}
+.go:hover{background:#3589B7}
+.dots{display:flex;gap:7px;justify-content:center;margin:14px 0 4px}
+.dots i{width:8px;height:8px;border-radius:50%;background:#C9C9C9}.dots i.on{background:#5A6EE8}
+/* Resultado */
+#out{margin-top:30px;scroll-margin-top:16px}
+.rhead{background:var(--card);border-radius:6px;padding:20px 18px;position:relative;margin-bottom:14px}
+.rhead h2{font-size:24px;font-weight:900;padding-right:56px}
+.rhead .medal{position:absolute;right:14px;top:-14px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tag{background:var(--pill);border-radius:10px;padding:4px 12px;font-weight:800;font-size:14px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+.btn{font:inherit;font-weight:800;font-size:16px;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;background:var(--blue);color:#fff}
+.btn.sec{background:#fff;color:var(--blue-d);border:2px solid var(--blue)}
+.btn[disabled]{opacity:.6;cursor:wait}
+.msg{font-weight:700;font-size:14px;color:var(--muted);align-self:center}
+details.acc{border-radius:6px;margin-bottom:12px;background:#fff;border:2px solid var(--blue-soft);overflow:hidden}
+details.acc>summary{list-style:none;cursor:pointer;background:var(--blue);color:#fff;font-weight:800;font-size:18px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"›";font-size:26px;line-height:1;transform:rotate(90deg);transition:transform .2s}
+details.acc:not([open])>summary::after{transform:rotate(0)}
+details.acc .in{padding:14px}
+details.pro>summary{background:var(--badge)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15.5px}
+th{background:var(--pill);text-align:left;font-weight:900;padding:9px 10px;font-size:14.5px}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#FFFDF0}
+td b{font-weight:900}
+.lvl{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:800;font-size:13px;white-space:nowrap}
+.l-g{background:var(--ok-soft);color:#21704A}.l-y{background:#FFF3B8;color:#6B5600}.l-o{background:#FDE1C9;color:#8A4310}.l-r{background:var(--red-soft);color:#9E2A21}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
+.note{background:var(--band);border-radius:6px;padding:10px 12px;margin-top:10px;font-weight:600;font-size:15px}
+.alert{background:var(--red-soft);border-left:6px solid var(--red);padding:10px 12px;border-radius:4px;margin-bottom:10px;font-weight:600}
+.info{background:var(--blue-soft);border-left:6px solid var(--blue);padding:10px 12px;border-radius:4px;margin-bottom:10px;font-weight:600}
+.pro ul{margin:6px 0 0;padding-left:20px}
+.pro li{margin-bottom:4px}
+.refs{font-size:13.5px;color:var(--muted)}
+.ex{font-size:13px;font-weight:800;color:var(--muted);text-align:center;margin-bottom:8px}
+@media (max-width:560px){
+  table.stack thead{display:none}
+  table.stack tr{display:block;border-bottom:2px solid var(--line);padding:6px 0}
+  table.stack td{display:block;border:0;padding:4px 6px}
+  table.stack td[data-l=""]::before{display:none}
+  table.stack td::before{content:attr(data-l);display:block;font-weight:900;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--blue-d)}
+}
+/* Hoja para PDF / impresión */
+#sheetWrap{position:absolute;left:-10000px;top:0}
+.sheet{width:760px;background:#fff;color:#1B1B1B;font-family:var(--f);font-size:14.5px;padding:0}
+.sh-head{background:var(--blue);color:#fff;border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.sh-head h1{font-size:25px;font-weight:900}
+.sh-head p{margin:4px 0 0;font-weight:700}
+.sh-sec{margin-bottom:14px;break-inside:avoid;page-break-inside:avoid}
+.sh-sec h3{display:inline-block;background:var(--pill);border-radius:8px;padding:4px 12px;font-size:17px;font-weight:900;margin-bottom:8px}
+.sheet table{font-size:13.5px}
+.sheet tr{page-break-inside:avoid;break-inside:avoid}
+.sh-foot{font-size:12px;color:#5C5C5C;border-top:2px solid var(--line);padding-top:8px;margin-top:6px}
+@media print{
+  .wrap{display:none}
+  #sheetWrap{position:static}
+  .sheet{width:auto}
+  @page{size:A4;margin:12mm}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="app">
+  <header class="hero">
+    <span class="count" id="count">0/4</span>
+    <div class="p1">Ejercicio después de una</div>
+    <div class="p2">trombosis o embolia de pulmón</div>
+  </header>
+
+  <div class="band">
+    <svg width="46" height="46" viewBox="0 0 46 46" aria-hidden="true"><circle cx="23" cy="23" r="21" fill="#4FAFDD"/><path d="M14 26c3 0 4-8 7-8s3 12 6 12 3-6 5-6" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>Rellene <b>4 bloques</b> en menos de un minuto. La app genera un plan de ejercicio personal, en lenguaje sencillo y listo para entregar en PDF.</div>
+  </div>
+
+  <form id="f" autocomplete="off">
+    <section class="card">
+      <h2><span class="step">1/4</span>El paciente</h2>
+      <div class="grid4">
+        <div class="field full"><label class="lab" for="nombre">Nombre <span class="hint">(opcional)</span></label><input type="text" id="nombre" placeholder="Nombre del paciente"></div>
+        <div class="field"><label class="lab" for="edad">Edad</label><input type="number" id="edad" min="14" max="105" inputmode="numeric"></div>
+        <div class="field"><label class="lab" for="peso">Peso (kg)</label><input type="number" id="peso" min="30" max="250" inputmode="decimal"></div>
+        <div class="field"><label class="lab" for="talla">Talla (cm)</label><input type="number" id="talla" min="120" max="220" inputmode="numeric"></div>
+      </div>
+      <span class="imc" id="imc">IMC: —</span>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">2/4</span>La trombosis</h2>
+      <div class="field"><span class="lab">¿Qué ha tenido?</span>
+        <div class="chips" data-g="evento" data-single>
+          <button type="button" class="chip" data-v="tvp">Trombosis en la pierna (TVP)</button>
+          <button type="button" class="chip" data-v="tep">Embolia de pulmón (TEP)</button>
+          <button type="button" class="chip" data-v="ambos">TVP + TEP</button>
+        </div></div>
+      <div class="field" id="locBox"><span class="lab">¿Dónde estaba el trombo de la pierna?</span>
+        <div class="chips" data-g="loc" data-single>
+          <button type="button" class="chip" data-v="distal">Pantorrilla (distal)</button>
+          <button type="button" class="chip" data-v="proximal">Rodilla o muslo (proximal)</button>
+          <button type="button" class="chip" data-v="iliofemoral">Ingle / iliofemoral</button>
+        </div></div>
+      <div class="field"><span class="lab">¿Cuánto tiempo hace del diagnóstico?</span>
+        <div class="chips" data-g="tiempo" data-single>
+          <button type="button" class="chip" data-v="0">Menos de 1 semana</button>
+          <button type="button" class="chip" data-v="1">1–4 semanas</button>
+          <button type="button" class="chip" data-v="2">1–3 meses</button>
+          <button type="button" class="chip" data-v="3">Más de 3 meses</button>
+        </div></div>
+      <div class="field"><span class="lab">¿Sigue con anticoagulante?</span>
+        <div class="chips" data-g="aco" data-single>
+          <button type="button" class="chip" data-v="si">Sí</button>
+          <button type="button" class="chip" data-v="no">No, ya lo terminó</button>
+        </div></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">3/4</span>Cómo se mueve</h2>
+      <div class="field"><span class="lab">Movilidad</span>
+        <div class="chips" data-g="mov" data-single>
+          <button type="button" class="chip" data-v="0">Camina sin problemas</button>
+          <button type="button" class="chip" data-v="1">Algo limitada (bastón, dolor)</button>
+          <button type="button" class="chip" data-v="2">Muy limitada (andador)</button>
+          <button type="button" class="chip" data-v="3">Silla de ruedas / encamado</button>
+        </div></div>
+      <div class="field"><span class="lab">¿Hacía ejercicio antes?</span>
+        <div class="chips" data-g="previo" data-single>
+          <button type="button" class="chip" data-v="0">Nada (sedentario)</button>
+          <button type="button" class="chip" data-v="1">Paseos ocasionales</button>
+          <button type="button" class="chip" data-v="2">Regular (≥150 min/sem)</button>
+          <button type="button" class="chip" data-v="3">Deportista</button>
+        </div></div>
+      <div class="field"><span class="lab">¿Qué le gusta o tiene a mano? <span class="hint">(varias)</span></span>
+        <div class="chips" data-g="gustos">
+          <button type="button" class="chip" data-v="caminar">Caminar</button>
+          <button type="button" class="chip" data-v="bici">Bicicleta / estática</button>
+          <button type="button" class="chip" data-v="piscina">Piscina</button>
+          <button type="button" class="chip" data-v="gimnasio">Gimnasio</button>
+          <button type="button" class="chip" data-v="casa">Ejercicio en casa</button>
+          <button type="button" class="chip" data-v="baile">Baile</button>
+        </div></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">4/4</span>Síntomas y situaciones</h2>
+      <div class="field"><span class="lab">Síntomas ahora <span class="hint">(varias)</span></span>
+        <div class="chips" data-g="sint">
+          <button type="button" class="chip" data-v="disnea">Ahogo al esfuerzo</button>
+          <button type="button" class="chip" data-v="pierna">Pierna hinchada o pesada</button>
+          <button type="button" class="chip" data-v="ulcera">Herida / úlcera en la pierna</button>
+          <button type="button" class="chip" data-v="miedo">Miedo a moverse</button>
+          <button type="button" class="chip" data-v="cansancio">Se cansa enseguida</button>
+        </div></div>
+      <div class="field"><span class="lab">Situaciones especiales <span class="hint">(varias)</span></span>
+        <div class="chips" data-g="esp">
+          <button type="button" class="chip" data-v="vd">TEP con afectación del VD / riesgo intermedio-alto</button>
+          <button type="button" class="chip" data-v="hptec">HPTEC o hipertensión pulmonar</button>
+          <button type="button" class="chip" data-v="cancer">Cáncer activo</button>
+          <button type="button" class="chip" data-v="cardio">Insuficiencia cardiaca o EPOC</button>
+          <button type="button" class="chip" data-v="caidas">Caídas recientes</button>
+          <button type="button" class="chip" data-v="sangrado">Alto riesgo de sangrado</button>
+          <button type="button" class="chip" data-v="artrosis">Dolor articular / artrosis</button>
+        </div></div>
+      <div class="field"><span class="lab">Síntomas de alarma presentes <span class="hint">(si marca alguno, el plan se limita y se avisa al profesional)</span></span>
+        <div class="chips" data-g="alarma">
+          <button type="button" class="chip alarm" data-v="torax">Dolor en el pecho</button>
+          <button type="button" class="chip alarm" data-v="sincope">Mareo o desmayo al esfuerzo</button>
+          <button type="button" class="chip alarm" data-v="reposo">Ahogo en reposo</button>
+        </div></div>
+      <div class="field"><label class="lab" for="notas">Nota personal para el paciente <span class="hint">(opcional, sale en el PDF)</span></label><textarea id="notas" placeholder="Ej.: Próxima revisión en consulta de ETEV dentro de 3 meses."></textarea></div>
+      <div class="field"><label class="lab" for="medico">Profesional / unidad <span class="hint">(cabecera del PDF; se recuerda en este navegador)</span></label><input type="text" id="medico"></div>
+    </section>
+
+    <button class="go" type="submit">Generar plan personalizado <span aria-hidden="true">›</span></button>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+  </form>
+
+  <section id="out" aria-live="polite"></section>
+</div>
+
+<div id="sheetWrap" aria-hidden="true"><div id="sheet" class="sheet"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const S={evento:'tep',loc:'proximal',tiempo:'2',aco:'si',mov:'0',previo:'1',gustos:new Set(['caminar','bici']),sint:new Set(['disnea','cansancio']),esp:new Set(),alarma:new Set()};
+const DEF_MED='Unidad de ETEV · Medicina Interna · HCUV Arrixaca';
+let isExample=true;
+
+function initForm(){
+  $('#edad').value=58;$('#peso').value=84;$('#talla').value=172;
+  let m=DEF_MED;try{m=localStorage.getItem('etev_medico')||DEF_MED}catch(e){}
+  $('#medico').value=m;
+  document.querySelectorAll('.chips').forEach(g=>{
+    const k=g.dataset.g,single=g.hasAttribute('data-single');
+    g.querySelectorAll('.chip').forEach(b=>{
+      const v=b.dataset.v;
+      b.setAttribute('aria-pressed',single?String(S[k]===v):String(S[k].has(v)));
+      b.addEventListener('click',()=>{
+        if(single){S[k]=v;g.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));}
+        else{S[k].has(v)?S[k].delete(v):S[k].add(v);b.setAttribute('aria-pressed',String(S[k].has(v)));}
+        sync();
+      });
+    });
+  });
+  ['edad','peso','talla'].forEach(id=>$('#'+id).addEventListener('input',sync));
+  $('#medico').addEventListener('change',()=>{try{localStorage.setItem('etev_medico',$('#medico').value)}catch(e){}});
+  sync();
+}
+function bmi(){const p=+$('#peso').value,t=+$('#talla').value;return p&&t?p/((t/100)**2):null}
+function sync(){
+  $('#locBox').hidden=S.evento==='tep';
+  const b=bmi();$('#imc').textContent='IMC: '+(b?b.toFixed(1).replace('.',',')+' kg/m²':'—');
+  let n=0;if($('#edad').value)n++;if(S.evento&&S.tiempo&&S.aco)n++;if(S.mov&&S.previo)n++;n++;
+  $('#count').textContent=n+'/4';
+}
+
+/* ---------- Motor de recomendaciones ---------- */
+function model(){
+  const edad=+$('#edad').value||60, imc=bmi(), t=+S.tiempo, mov=+S.mov, prev=+S.previo;
+  const tvp=S.evento!=='tep', tep=S.evento!=='tvp';
+  const sint=S.sint, esp=S.esp, al=S.alarma;
+  const frail=edad>=75||esp.has('caidas')||mov>=2;
+  const legFocus=tvp&&(S.loc!=='distal'||sint.has('pierna')||sint.has('ulcera'));
+  const lungFocus=tep||sint.has('disnea');
+  const red=al.size>0;
+  const vdEarly=esp.has('vd')&&t<=1;
+  let start=[0,1,2,3][t];
+  if(prev===3&&t>=2)start++;
+  if(prev===0&&t===3)start=2;
+  if(vdEarly)start=Math.min(start,t===0?0:1);
+  let cap=4;
+  if(frail)cap=3; if(esp.has('cardio'))cap=Math.min(cap,3); if(esp.has('hptec'))cap=Math.min(cap,3);
+  if(mov===3)cap=Math.min(cap,2); if(red)cap=1;
+  start=Math.min(start,cap);
+  const slow=prev===0||frail||edad>=65||esp.has('vd')||esp.has('hptec')||esp.has('cancer');
+  const stepW=slow?3:2;
+  const intervalsOK=!frail&&!esp.has('hptec')&&!esp.has('cardio')&&!red&&!(esp.has('vd')&&t<2)&&mov<=1;
+  const supervised=esp.has('hptec')||vdEarly||red||(sint.has('disnea')&&t===3);
+  return {edad,imc,t,mov,prev,tvp,tep,sint,esp,al,frail,legFocus,lungFocus,red,start,cap,stepW,intervalsOK,supervised,aco:S.aco==='si',gustos:S.gustos};
+}
+function actName(m,L){
+  if(m.mov===3)return 'Pedalear sentado o mover brazos y piernas en la silla';
+  if(L<=1)return L===0?'Caminar por casa o por el pasillo':'Caminar a paso tranquilo';
+  const g=m.gustos,o=['Caminar'];
+  if(g.has('bici'))o.push('bicicleta estática');
+  if(g.has('piscina')&&!m.sint.has('ulcera'))o.push('nadar o andar en el agua');
+  if(g.has('baile'))o.push('bailar');
+  if(g.has('gimnasio')&&L>=3)o.push('elíptica');
+  if(m.imc&&m.imc>=30&&!g.has('bici')&&!g.has('piscina'))o.push('bicicleta estática (menos impacto)');
+  if(m.sint.has('ulcera')&&L>=2) o[0]='Caminar con sus medias o vendaje';
+  return o.length>1?o.slice(0,-1).join(', ')+' o '+o[o.length-1]:o[0];
+}
+function aero(m,L){
+  const wc=m.mov===3, f=m.frail;
+  const mins=wc?['5 min, 2 veces al día','10 min, 2 veces al día','15–20 min al día','20–30 min al día','20–30 min al día']
+    :f?['5 min, 2–3 veces al día','10 min, 1–2 veces al día','15–20 min (en 2 ratos si lo necesita)','20–30 min','30 min']
+    :['5–10 min, 2–3 veces al día','10–15 min al día (puede repartirlo en 2)','20–30 min','30–40 min','30–60 min (al menos 150 min a la semana)'];
+  const dias=['Todos los días','Todos los días','5 días a la semana','5 días a la semana','5–6 días a la semana'];
+  return {que:actName(m,L),cuanto:mins[L],dias:dias[L]};
+}
+function fuerza(m,L){
+  const d=m.legFocus?'3 días':'2 días';
+  return ['Mover los tobillos (bombeo) cada hora',
+    'Ejercicios suaves de piernas, 1 vez al día',
+    'Tabla de ejercicios '+d+' a la semana · 2 vueltas',
+    'Tabla de ejercicios '+(m.legFocus?'3':'2–3')+' días a la semana · 2–3 vueltas',
+    'Tabla '+(m.legFocus?'3':'2–3')+' días a la semana · 3 vueltas'+(m.gustos.has('gimnasio')&&!m.frail?' (puede usar máquinas)':'')][L];
+}
+function extra(m,L){
+  const x=[];
+  if(m.intervalsOK&&m.lungFocus&&L===3)x.push('1 día a la semana: <b>4 veces</b> 2 min a paso rápido + 2 min suave');
+  if(m.intervalsOK&&m.lungFocus&&L===4)x.push('2 días a la semana: <b>5–6 veces</b> 3 min rápido + 2 min suave');
+  if(m.intervalsOK&&!m.lungFocus&&L===4)x.push('Puede meter tramos más rápidos de 2–3 min');
+  if(m.lungFocus)x.push('Respiración: 5 min, 2 veces al día');
+  if(m.frail&&L>=1)x.push('Equilibrio: 5 min al día');
+  return x.length?x.join('<br>'):'—';
+}
+const LV=[['l-g','Verde'],['l-g','Verde'],['l-y','Verde → amarillo'],['l-y','Amarillo'],['l-y','Amarillo (naranja en tramos rápidos)']];
+function lvl(m,L){let v=LV[L];if(L===4&&!m.intervalsOK)v=['l-y','Amarillo'];return '<span class="lvl '+v[0]+'">'+v[1]+'</span>';}
+function pasos(m,L){if(m.mov===3)return '—';const f=m.frail;return (f?['1.000–2.000','2.000–3.000','3.000–4.000','4.000–5.000','5.000–6.000']:['2.000–3.000','3.000–4.000','5.000','6.000–7.000','7.000–10.000'])[L];}
+
+function stages(m){
+  const rows=[];let w=1;
+  for(let L=m.start;L<=m.cap;L++){
+    const last=L===m.cap;
+    const label=last?(rows.length?'Desde la semana '+w:'Ahora')+' <span class="hint">y mantener</span>':'Semanas '+w+'–'+(w+m.stepW-1);
+    rows.push({L,label});w+=m.stepW;
+    if(rows.length===4&&!last){rows[3].label='Desde la semana '+(w-m.stepW)+' <span class="hint">subiendo poco a poco</span>';break;}
+  }
+  return rows;
+}
+function weekPlan(m){
+  const L=m.start,days=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  const a=aero(m,L);
+  if(L<=1)return days.map(d=>[d,a.que+' ('+a.cuanto+')'+(L===1?' + ejercicios suaves de piernas':' + mover tobillos cada hora')]);
+  const legs=m.legFocus?[0,2,4]:[0,3];
+  const ints=m.intervalsOK&&m.lungFocus&&L>=3?(L===4?[1,5]:[1]):[];
+  return days.map((d,i)=>{
+    const p=[];
+    if(i===6)p.push('Descanso activo: paseo tranquilo');
+    else if(ints.includes(i))p.push('Caminata con tramos rápidos ('+(L===4?'5–6':'4')+' veces)');
+    else if(L<4&&(i===2||i===5))p.push(i===5?a.que.split(',')[0]+' a su ritmo ('+a.cuanto+')':'Paseo suave o descanso');
+    else p.push(a.que.split(' o ')[0]+' ('+a.cuanto+')');
+    if(legs.includes(i))p.push('<b>tabla de ejercicios</b>');
+    return [d,p.join(' + ')];
+  });
+}
+function exercises(m){
+  const L=Math.max(m.start,1),r=[];
+  const reps=(a,b)=>L<=1?a:b;
+  r.push(['Bombeo de tobillos','Sentado o tumbado, mueva los pies arriba y abajo como si pisara un pedal.','20 veces cada hora que pase sentado']);
+  if(m.mov<=1)r.push(['Ponerse de puntillas','De pie, agarrado a una encimera o una silla, suba los talones y baje despacio.'+(m.legFocus?' <b>Es el ejercicio más importante para su pierna.</b>':''),reps('10 veces','3 vueltas de 12–15. Cuando le resulte fácil, hágalo con una sola pierna')]);
+  else r.push(['Puntillas sentado','Sentado, levante los talones del suelo dejando las puntas apoyadas.','3 vueltas de 15']);
+  if(m.mov<=2)r.push(['Sentarse y levantarse','Use una silla firme. Levántese sin usar las manos (al principio puede ayudarse) y siéntese despacio.',reps('5 veces','3 vueltas de 8–12')]);
+  if(m.mov>=2)r.push(['Estirar la rodilla sentado','Sentado, estire una pierna hasta dejarla recta, aguante 3 segundos y bájela.','2–3 vueltas de 10 con cada pierna']);
+  if(m.mov<=1)r.push(['Pasar el peso de pierna a pierna','De pie con apoyo, balancee el peso del cuerpo de una pierna a la otra.','1–2 minutos']);
+  if(m.cap>=3&&m.mov===0&&!m.frail&&!m.esp.has('artrosis'))r.push(['Subir y bajar un escalón','Suba y baje un escalón alternando la pierna que sube primero. Agárrese a la barandilla.','3 vueltas de 10 (cuando lleve 3–4 semanas)']);
+  if(L>=1)r.push(['Brazos','Con dos botellas de agua o una goma elástica, suba los brazos por encima de la cabeza y bájelos.','2 vueltas de 10–12']);
+  if(m.frail)r.push(['Equilibrio','De pie junto a la encimera, sujetándose con una mano, aguante sobre una pierna y luego sobre la otra.','10 segundos, 5 veces con cada pierna']);
+  if(m.lungFocus)r.push(['Respirar con la barriga','Sentado, coja aire por la nariz hinchando la barriga y suéltelo despacio por la boca, con los labios como para soplar una vela.','5 minutos, 2 veces al día. También al caminar si se ahoga']);
+  return r;
+}
+function precautions(m){
+  const r=[];
+  r.push(['Moverse es seguro con su tratamiento','El reposo no ayuda a curar el trombo. Caminar desde el principio reduce el dolor y la hinchazón.']);
+  if(m.aco)r.push(['Evite golpes y caídas mientras tome anticoagulante','Mejor deportes sin choques. Evite fútbol, baloncesto, artes marciales, esquí, escalada o bici de montaña.'+(m.gustos.has('bici')?' Use casco en la bici.':'')]);
+  r.push(['No aguante la respiración al hacer fuerza','Suelte el aire al subir o empujar. Así el corazón trabaja mejor.']);
+  if(m.aco&&(m.gustos.has('gimnasio')||m.prev>=2))r.push(['En el gimnasio, mejor máquinas que pesas sueltas al principio','Son más seguras. Suba el peso poco a poco, nunca al máximo.']);
+  r.push(['No pase más de 1 hora seguida sentado','Levántese y camine unos minutos o mueva los tobillos. En viajes largos, beba agua y levántese cada hora.']);
+  if(m.legFocus||m.sint.has('pierna'))r.push(['Si la pierna se hincha o le pesa, use sus medias','Alivian las molestias. Póngalas por la mañana y úselas también al hacer ejercicio. Al descansar, ponga la pierna en alto.']);
+  if(m.sint.has('ulcera'))r.push(['No vaya a la piscina hasta que la herida esté cerrada','Caminar y ponerse de puntillas sí ayudan a que cure antes.']);
+  if(m.frail)r.push(['Haga los ejercicios con apoyo cerca','Calzado cerrado, suelo sin alfombras y una silla o encimera a mano.']);
+  if(m.imc&&m.imc>=30)r.push(['Elija ejercicio de poco impacto','Bicicleta, agua o caminar en llano cuidan sus rodillas.']);
+  if(m.esp.has('cancer'))r.push(['Adapte el ejercicio a cómo se encuentra','En los días de más cansancio, haga menos, pero no lo deje del todo.']);
+  if(m.esp.has('artrosis'))r.push(['Si le duelen las articulaciones','Pruebe la bici o el agua. Un dolor leve que se pasa en 1–2 horas es aceptable.']);
+  if(m.sint.has('miedo'))r.push(['Es normal tener miedo a moverse','Empiece por poco y vaya sumando. Notar que respira más rápido o que el corazón late más es normal.']);
+  if(m.prev>=2)r.push(['Vuelta a su deporte',m.aco?'Puede retomar deportes sin choques (correr, bici de carretera, nadar, gimnasio) subiendo poco a poco. Consulte antes de competir.':'Puede retomar su deporte subiendo poco a poco. Consulte antes de competir.']);
+  r.push(['Suba poco a poco','Aumente como mucho un 10% cada semana. Si un día se encuentra peor, repita lo de la semana anterior.']);
+  return r;
+}
+function keyMsgs(m){
+  const r=[['Su meta','Moverse todos los días, aunque sea poco, e ir sumando.']];
+  if(m.legFocus)r.push(['Su pierna','Los músculos de la pantorrilla funcionan como una bomba que empuja la sangre. Ponerse de puntillas y caminar la fortalecen.']);
+  if(m.lungFocus)r.push(['Su respiración','El ejercicio regular mejora el ahogo y el cansancio. El ahogo suele ser lo último en mejorar: tenga paciencia.']);
+  if(m.supervised)r.push(['Con ayuda profesional','En su caso conviene que las primeras semanas el ejercicio esté vigilado por su equipo médico o de rehabilitación.']);
+  r.push(['La regla del habla','Mientras hace ejercicio debe poder hablar, aunque no cantar.']);
+  return r;
+}
+const ALARM=[
+  ['l-r','Pare y llame al 112','Dolor fuerte en el pecho · ahogo brusco que no mejora al parar · desmayo · tos con sangre'],
+  ['l-o','Pare y consulte pronto','Sangrado que no para · heces negras · orina roja · pierna más hinchada o dolorosa que antes · palpitaciones o mareo'],
+  ['l-g','Es normal','Cansancio, respirar más rápido, calor o agujetas leves que se pasan en 1–2 días']];
+
+function proPanel(m){
+  const a=[],cand=[];
+  if(m.red)a.push('<div class="alert"><b>Síntomas de alarma marcados.</b> Valorar antes de prescribir (recurrencia, HPTEC, sangrado, cardiopatía). El plan del paciente queda limitado a nivel 0–1.</div>');
+  if(m.esp.has('vd'))a.push('<div class="alert"><b>TEP con disfunción de VD / riesgo intermedio-alto.</b> Progresión monitorizada; evitar Valsalva y cargas máximas hasta estabilización. Sin intervalos antes del mes.</div>');
+  if(m.esp.has('hptec'))a.push('<div class="alert"><b>HPTEC/HP.</b> Entrenamiento supervisado en centro experto con tratamiento optimizado (ESC/ERS 2022). Aeróbico bajo-moderado + fuerza + respiratorio; sin HIIT. MA: 6MWD +70 a +106 m.</div>');
+  if(m.sint.has('disnea')&&m.t>=2)a.push('<div class="info"><b>Disnea a '+(m.t===3?'más de 3 meses':'1–3 meses')+'.</b> '+(m.t===3?'Antes de atribuirla a desacondicionamiento: eco ± gammagrafía V/Q y CPET (patrón vascular: VE/VCO₂ &gt;34, PetCO₂ baja, desaturación). Si se descarta HPTEC: derivar a rehabilitación estructurada (PeRehab: ISWT +53 m).':'Reevaluar a los 3 meses con PVFS + mMRC; si persiste, cribado de HPTEC.')+'</div>');
+  if(m.esp.has('vd'))cand.push('TEP con disfunción de VD');
+  if(m.sint.has('disnea')&&m.t>=2)cand.push('disnea persistente');
+  if(m.tvp&&S.loc==='iliofemoral')cand.push('TVP iliofemoral');
+  if(m.frail)cand.push('fragilidad / movilidad limitada');
+  if(m.esp.has('cancer'))cand.push('cáncer activo');
+  if(m.sint.has('miedo'))cand.push('kinesiofobia');
+  const perfil=[];
+  if(m.legFocus)perfil.push('Predominio pierna / riesgo de SPT → fuerza de tríceps sural + aeróbico de bajo impacto');
+  if(m.lungFocus)perfil.push('Predominio post-TEP → aeróbico'+(m.intervalsOK?' con progresión a intervalos':' continuo')+' + fuerza global + respiratorio');
+  if(m.frail)perfil.push('Fragilidad → sedestación/apoyo, equilibrio, sin intervalos');
+  return a.join('')+
+  '<p><b>Perfil asignado:</b></p><ul>'+perfil.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+  '<p><b>Nivel de inicio:</b> '+m.start+' de 4 · <b>techo:</b> '+m.cap+' · <b>escalones de</b> '+m.stepW+' semanas'+(m.imc?' · <b>IMC</b> '+m.imc.toFixed(1).replace('.',','):'')+'</p>'+
+  (cand.length?'<div class="info"><b>Candidato prioritario a programa supervisado (fase III):</b> '+cand.join(', ')+'.</div>':'')+
+  '<p><b>Métricas sugeridas en consulta (≈10 min):</b></p><ul><li>PVFS + mMRC en cada visita (cambio relevante: ≥1 grado).</li><li>Sit-to-stand 1 min y elevaciones de talón unipodales: asimetría ≥25% = bomba débil.</li>'+(m.tvp?'<li>Villalta a partir de los 3 meses (≥5 SPT; ≥10 moderado-grave).</li>':'')+'<li>'+(m.tep?'PEmb-QoL':'VEINES-QoL')+' autoadministrado basal y a 3–6 meses.</li>'+(m.tep?'<li>ISWT o 6MWT basal y al final del programa.</li>':'')+'</ul>'+
+  (m.legFocus?'<p class="note">Las medias no previenen el SPT (SOX, Lancet 2014): se indican para síntomas. La fuerza gemelar aumenta la fracción de eyección de la bomba (Hedges g=0,83; Orr 2017).</p>':'')+
+  '<p class="refs"><b>Base:</b> Liu 2015 (MA, deambulación precoz segura) · APTA CPG 2022 · Jervan 2023 Chest (PeRehab) · Rolving 2020 JAMA Netw Open · Ghram 2021 MSSE · Kahn 2011 CMAJ · Padberg 2004 J Vasc Surg · Jull 2018 JAMA Dermatol · Xiang 2025 Eur Respir Rev · Steiner 2026 Eur J Prev Cardiol · ESC/ERS HP 2022. Dosis FITT orientativa ACSM/ESC; progresión semanal ≤10%.</p>';
+}
+
+/* ---------- Render ---------- */
+function td(l,v){return '<td data-l="'+l+'">'+v+'</td>';}
+function table(head,rows,stack){return '<div class="tbl"><table'+(stack?' class="stack"':'')+'>'+(head.some(Boolean)?'<thead><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead>':'')+'<tbody>'+rows.map(r=>'<tr>'+r.map((c,i)=>td(head[i],c)).join('')+'</tr>').join('')+'</tbody></table></div>';}
+function sections(m){
+  const st=stages(m);
+  const showSteps=m.mov!==3;
+  const planHead=['Cuándo','Moverse','Cuánto','Fuerza','Además','Esfuerzo'].concat(showSteps?['Pasos al día']:[]);
+  const planRows=st.map(s=>{const a=aero(m,s.L);return ['<b>'+s.label+'</b>',a.que+'<br><span class="hint">'+a.dias+'</span>',a.cuanto,fuerza(m,s.L),extra(m,s.L),lvl(m,s.L)].concat(showSteps?[pasos(m,s.L)]:[]);});
+  const sema=[['<span class="sw" style="background:var(--ok)"></span><b>Verde</b>','Puede hablar y cantar. Respira tranquilo.','Para calentar, las primeras semanas y los días de cansancio'],
+    ['<span class="sw" style="background:var(--warn)"></span><b>Amarillo</b>','Puede hablar, pero no cantar. Nota calor y respira más rápido.','La mayor parte del ejercicio']];
+  if(m.intervalsOK&&m.lungFocus&&m.cap>=3)sema.push(['<span class="sw" style="background:var(--orange)"></span><b>Naranja</b>','Solo puede decir frases cortas.','Solo en los tramos rápidos, unos minutos']);
+  sema.push(['<span class="sw" style="background:var(--red)"></span><b>Rojo</b>','No puede hablar, se marea o tiene dolor.','<b>Pare.</b> Es demasiado']);
+  const out=[
+    ['Lo más importante',table(['',''],keyMsgs(m).map(r=>['<b>'+r[0]+'</b>',r[1]]),true)],
+    ['Su plan paso a paso',table(planHead,planRows,true)+'<p class="note">Si un escalón le cuesta, quédese en él una o dos semanas más. No hay prisa.</p>'],
+    ['Su semana para empezar',table(['Día','Qué hacer'],weekPlan(m),true)],
+    ['Sus ejercicios',table(['Ejercicio','Cómo se hace','Cuántas veces'],exercises(m).map(r=>['<b>'+r[0]+'</b>',r[1],r[2]]),true)+'<p class="note">Suelte el aire al hacer el esfuerzo. Muévase despacio y sin dolor.</p>'],
+    ['¿Cuánto esfuerzo?',table(['Color','Cómo se siente','Cuándo'],sema,true)],
+    ['Consejos para hacerlo con seguridad',table(['Consejo','Por qué'],precautions(m).map(r=>['<b>'+r[0]+'</b>',r[1]]),true)],
+    ['Cuándo parar y pedir ayuda',table(['',''],ALARM.map(r=>['<span class="lvl '+r[0]+'">'+r[1]+'</span>',r[2]]),true)]
+  ];
+  const n=$('#notas').value.trim();
+  if(n)out.push(['Nota de su médico','<p class="note" style="margin:0">'+esc(n).replace(/\n/g,'<br>')+'</p>']);
+  return out;
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function evTxt(){return {tvp:'trombosis venosa profunda',tep:'embolia de pulmón',ambos:'trombosis venosa y embolia de pulmón'}[S.evento];}
+function today(){return new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});}
+const MEDAL='<svg class="medal" width="54" height="64" viewBox="0 0 54 64" aria-hidden="true"><path d="M16 34 8 60l9-5 5 8 7-25z" fill="#E0574F"/><path d="M38 34l8 26-9-5-5 8-7-25z" fill="#C8443C"/><circle cx="27" cy="24" r="21" fill="#F2A23A"/><circle cx="27" cy="24" r="15" fill="#F7C65A" stroke="#E08E2B" stroke-width="2"/><path d="m27 14 3 6.3 6.8.8-5 4.7 1.3 6.7L27 29.2l-6.1 3.3 1.3-6.7-5-4.7 6.8-.8z" fill="#F2A23A"/></svg>';
+
+function render(scroll){
+  const m=model(),sec=sections(m),nom=$('#nombre').value.trim();
+  const tags=[evTxt().replace(/^./,c=>c.toUpperCase()),['<1 semana','1–4 semanas','1–3 meses','>3 meses'][m.t],m.edad+' años'];
+  if(m.supervised)tags.push('Inicio supervisado');
+  let h='';
+  if(isExample)h+='<p class="ex">EJEMPLO con datos ficticios · cambie los datos y pulse «Generar plan personalizado»</p>';
+  h+='<div class="rhead">'+MEDAL+'<h2>Plan de ejercicio'+(nom?' de '+esc(nom):'')+'</h2><div class="tags">'+tags.map(t=>'<span class="tag">'+t+'</span>').join('')+'</div></div>';
+  h+='<div class="actions"><button class="btn" id="pdf" type="button">Descargar PDF para el paciente</button>'+(window.self===window.top?'<button class="btn sec" id="prt" type="button">Imprimir</button>':'')+'<button class="btn sec" id="nuevo" type="button">Nuevo paciente</button><span class="msg" id="pmsg"></span></div>';
+  sec.forEach(s=>{h+='<details class="acc" open><summary>'+s[0]+'</summary><div class="in">'+s[1]+'</div></details>';});
+  h+='<details class="acc pro"><summary>Para el profesional · no se imprime</summary><div class="in pro">'+proPanel(m)+'</div></details>';
+  $('#out').innerHTML=h;
+  // Hoja PDF
+  $('#sheet').innerHTML='<div class="sh-head"><h1>Su plan de ejercicio'+(nom?' · '+esc(nom):'')+'</h1><p>Después de una '+evTxt()+' · '+today()+'</p><p style="font-weight:600;opacity:.95">'+esc($('#medico').value||'')+'</p></div>'+
+    sec.map(s=>'<div class="sh-sec"><h3>'+s[0]+'</h3>'+s[1].replace(/ class="stack"/g,'')+'</div>').join('')+
+    '<div class="sh-foot">Este plan es personal y orientativo. Si cambia su situación o aparecen síntomas nuevos, consulte con su médico antes de seguir.</div>';
+  $('#pdf').addEventListener('click',makePdf);
+  if($('#prt'))$('#prt').addEventListener('click',()=>window.print());
+  $('#nuevo').addEventListener('click',reset);
+  if(scroll)$('#out').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+}
+function reset(){
+  ['nombre','edad','peso','talla','notas'].forEach(id=>$('#'+id).value='');
+  Object.assign(S,{evento:'tvp',loc:'proximal',tiempo:'0',aco:'si',mov:'0',previo:'0'});
+  ['gustos','sint','esp','alarma'].forEach(k=>S[k].clear());S.gustos.add('caminar');
+  document.querySelectorAll('.chips').forEach(g=>{const k=g.dataset.g,single=g.hasAttribute('data-single');g.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',String(single?S[k]===b.dataset.v:S[k].has(b.dataset.v))));});
+  isExample=false;$('#out').innerHTML='';sync();window.scrollTo({top:0});$('#nombre').focus();
+}
+function buildPdf(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  const W=210,M=14,CW=W-2*M,H=297;
+  const BLUE=[79,175,221],PILL=[244,217,107],INK=[27,27,27],LINE=[231,223,168],ZEBRA=[255,253,240],GREY=[236,236,236];
+  const fix=t=>String(t).replace(/→/g,'a').replace(/≥/g,'>=').replace(/≤/g,'<=').replace(/[‘’]/g,"'").replace(/[“”«»]/g,'"').replace(/…/g,'...').replace(/ /g,' ');
+  const nom=$('#nombre').value.trim(),med=$('#medico').value.trim();
+  // Cabecera
+  doc.setFillColor(...BLUE);doc.roundedRect(M,M,CW,med?27:21,3,3,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(17);
+  doc.text(fix('Su plan de ejercicio'+(nom?' · '+nom:'')),M+6,M+9);
+  doc.setFontSize(11);doc.text(fix('Después de una '+evTxt()+' · '+today()),M+6,M+16);
+  if(med){doc.setFont('helvetica','normal');doc.setFontSize(10);doc.text(fix(med),M+6,M+22.5);}
+  let y=M+(med?27:21)+7;
+  const ensure=h=>{if(y+h>H-18){doc.addPage();y=M;}};
+  const fills={'pare y llame':[252,231,228],'consulte':[253,225,201],'es normal':[227,244,234],'verde':[227,244,234],'amarillo':[255,243,184],'naranja':[253,225,201],'rojo':[252,231,228]};
+  document.querySelectorAll('#sheet .sh-sec').forEach(sec=>{
+    const title=fix(sec.querySelector('h3').textContent);
+    ensure(40);
+    doc.setFont('helvetica','bold');doc.setFontSize(12.5);
+    const tw=doc.getTextWidth(title)+8;
+    doc.setFillColor(...PILL);doc.roundedRect(M,y,tw,8,2,2,'F');
+    doc.setTextColor(...INK);doc.text(title,M+4,y+5.6);y+=10.5;
+    const tb=sec.querySelector('table');
+    if(tb){
+      const hasHead=!!tb.querySelector('thead');
+      const ncol=tb.querySelector('tr').children.length;
+      doc.autoTable({html:tb,startY:y,margin:{left:M,right:M,bottom:18},theme:'grid',
+        styles:{font:'helvetica',fontSize:ncol>=6?8.6:10,cellPadding:ncol>=6?1.8:2.4,textColor:INK,lineColor:LINE,lineWidth:0.2,valign:'top',overflow:'linebreak'},
+        headStyles:{fillColor:PILL,textColor:INK,fontStyle:'bold'},
+        alternateRowStyles:{fillColor:ZEBRA},
+        showHead:hasHead?'everyPage':'never',rowPageBreak:'avoid',
+        columnStyles:ncol>=6?{0:{fontStyle:'bold',cellWidth:22},1:{cellWidth:34},2:{cellWidth:24}}:{0:{fontStyle:'bold',cellWidth:ncol===2?42:'auto'}},
+        didParseCell:d=>{
+          d.cell.text=d.cell.text.map(fix);
+          if(d.section!=='body')return;
+          const raw=d.cell.text.join(' ').toLowerCase();
+          const isLevel=(d.column.index===0&&(ncol===2||ncol===3))||(ncol>=6&&d.column.index===5);
+          if(isLevel){for(const k in fills){if(raw.startsWith(k)){d.cell.styles.fillColor=fills[k];d.cell.styles.fontStyle='bold';break;}}}
+        }});
+      y=doc.lastAutoTable.finalY+3;
+    }
+    sec.querySelectorAll('.note').forEach(n=>{
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      const lines=doc.splitTextToSize(fix(n.innerText.trim()),CW-8);
+      const h=lines.length*4.6+5;ensure(h);
+      doc.setFillColor(...GREY);doc.roundedRect(M,y,CW,h,2,2,'F');
+      doc.setTextColor(...INK);doc.text(lines,M+4,y+5.2);y+=h+2;
+    });
+    y+=5;
+  });
+  // Pie en todas las páginas
+  const n=doc.getNumberOfPages();
+  for(let i=1;i<=n;i++){doc.setPage(i);doc.setDrawColor(...LINE);doc.setLineWidth(0.4);doc.line(M,H-14,W-M,H-14);
+    doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(92,92,92);
+    doc.text(fix('Plan personal y orientativo. Si cambia su situación o nota síntomas nuevos, consulte con su médico antes de seguir.'),M,H-9.5);
+    doc.text(i+' / '+n,W-M,H-9.5,{align:'right'});}
+  return doc;
+}
+async function makePdf(){
+  const btn=$('#pdf'),msg=$('#pmsg');btn.disabled=true;msg.textContent='Preparando PDF…';
+  const nom=$('#nombre').value.trim();
+  const fname='Plan_ejercicio_ETEV'+(nom?'_'+nom.replace(/[^\wÁÉÍÓÚÑáéíóúñ]+/g,'_'):'')+'.pdf';
+  try{
+    if(!window.jspdf||!window.jspdf.jsPDF)throw new Error('lib');
+    const doc=buildPdf();
+    let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null}catch(e){dl=null}
+    if(dl){
+      try{await dl.save({filename:fname,data:doc.output('blob')});msg.textContent='PDF guardado.';}
+      catch(e){msg.textContent=e&&e.code==='declined'?'Descarga cancelada.':'No se pudo guardar el PDF aquí.';}
+    }else{doc.save(fname);msg.textContent='PDF descargado.';}
+  }catch(e){msg.textContent=e&&e.message==='lib'?'No se cargó el generador de PDF. Recargue la página.':'No se pudo crear el PDF. Pruebe de nuevo.';}
+  btn.disabled=false;
+}
+$('#f').addEventListener('submit',e=>{e.preventDefault();isExample=false;render(true);});
+initForm();render(false);
+})();
+</script>
